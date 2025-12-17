@@ -72,3 +72,40 @@ Hands-on sessions in **MATLAB / Python** covering optimization, distributed opti
 - Introductory notes on applications to **goal-oriented communications**
 
 ---
+
+## Requirements
+
+- Python 3.10+ (recommended)
+- PyTorch (version: `xxx`)
+- MATLAB R2024b (recommended)
+- (Optional) `pip` / `venv`
+
+## Setup
+
+Clone the repository:
+
+```bash
+git clone https://github.com/<username>/<repo>.git
+cd <repo>
+```
+
+For Exercises 1–3, make sure to add the subfolders containing the MATLAB functions to the MATLAB path.
+
+## Exercise 4
+
+Exercise 4 is organized into three subfolders:
+
+- **`GIB_REGRESSION/`**: MATLAB project to test Gaussian IB in a multivariate normal regression task
+- **`NN_CLASSIFICATION/`**: Python project to test the Opportunistic Information Bottleneck in an image classification task (shallow neural networks on MNIST)
+- **`AE_COMPARISONS/`**: Python project to test the Opportunistic Information Bottleneck in an image classification task (CNNs on GTSRB)
+
+Both `NN_CLASSIFICATION` and `AE_COMPARISONS` require **PyTorch**. These folders include pre-trained inference models for the corresponding datasets.
+
+### NN_CLASSIFICATION
+
+> [!TIP]
+> **NN_CLASSIFICATION — PCA/IB inference**
+>
+> ```bash
+> python main.py --mode <ib|pca> --path_to_load <pca_ese|ib_ese>/network.pth
+> ```
