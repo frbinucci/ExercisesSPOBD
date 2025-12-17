@@ -10,11 +10,13 @@ choice = input("Select an option...");
 % algorithm with synthetic data.
 rng(46);
 
-N = 10;
-M = 20;
-gamma = 1e-2;
-alpha = 1e-3;
-iterations = 1000;
+N = 10; %Vector Size
+M = 20; %Number of observations 
+
+%NOTE THAT these parameters work for ADMM. 
+gamma = 5e-1; %Learning rate 
+alpha = 1e-2; %Regularization parameter
+iterations = 1e3;
 
 %Let's generate a sparse random signal.
 A = randn(N,M);
@@ -25,7 +27,7 @@ y = A*x0;
 if choice == 1
     [x_opt,x_tracker,J,fitting_cost_matrix,regularization_cost_matrix,C] = ista(A,y,alpha,gamma,iterations,x0);
 else
-    [x_opt,x_tracker,J,fitting_cost_matrix,regularization_cost_matrix,C] = lassoAdmm(A,y,alpha,gamma,iterations,x0);
+    [x_opt,x_tracker,J,fitting_cost_matrix,regularization_cost_matrix,C,z] = lassoAdmm(A,y,alpha,gamma,iterations,x0);
 end
 
 %Plotting the MSE and the original/estimated signal
@@ -46,7 +48,7 @@ grid on
 %% Part 2 
 % In this part of the script we evalute the sparsity of the solution for
 % different values of the regularization parameter
-alpha_vector = [1e-6,1e-5,1e-4,1e-3,1e-2];
+alpha_vector = [1e-6,1e-5,1e-4,1e-3,1e-2,1e-1,10];
 sparsity_vector = zeros(1,numel(alpha_vector));
 fitting_cost_matrix=zeros(numel(alpha_vector),iterations);
 regularization_cost_matrix=zeros(numel(alpha_vector),iterations);
@@ -62,7 +64,7 @@ for i=1:numel(alpha_vector)
     regularization_cost_matrix(i,:) = regularization_cost;
     fitting_cost_matrix(i,:) = fitting_cost;
     sparsity_vector(i) = sum(abs(x_opt)>0);
-    mse_vector(i) = C(end);
+    mse_vector(i) = C(end-1);
 end
 
 figure

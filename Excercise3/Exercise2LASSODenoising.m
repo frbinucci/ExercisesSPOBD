@@ -16,7 +16,7 @@ img = imresize(img,[img_width,img_height]);
 img = im2double(img);
 
 %Corrupting the image with Gaussian noise
-snr_db = 15;
+snr_db = 10;
 snr = 10^(snr_db/10);
 signal_power = sum_square(img(:))/numel(img);
 p_noise = signal_power/snr;
@@ -36,8 +36,7 @@ y = noisy_img(:);
 psi = kron(dct_matrix,dct_matrix.');
 
 %Setting up a set of sparsity constraints
-sparsity_constraints = [40,45,50,55,60,65,70,75,80,85,90,95,100,105,110];
-
+sparsity_constraints = [5,15,25,35,45,55,65,75,85,95];
 psnr_rec = zeros(length(sparsity_constraints),1);
 
 %We want to track the best number of components
@@ -45,11 +44,13 @@ best_psnr = 0;
 best_rec = zeros(size(img));
 
 for i=1:numel(sparsity_constraints)
+    fprintf("Sparsity constraint n. %d\n",i)
+    
     cvx_begin quiet
-        variable s(N)
-        minimize sum_square(y-psi*s)
-        subject to
-        sum(abs(s))<=sparsity_constraints(i);
+       variable s(N)
+       minimize sum_square(y-psi*s)
+       subject to
+       sum(abs(s))<=sparsity_constraints(i);
     cvx_end
     y_rec = psi*s;
     y_rec = reshape(y_rec,[img_width,img_height]);
@@ -69,6 +70,16 @@ xlabel("Sparsity",'FontSize',14);
 ylabel('Reconstruction MSE','FontSize',14);
 grid on;
 
+
+%Best reconstructed image rescaling (for visualization purposes)
+min_rec = min(min(best_rec));
+max_rec = max(max(best_rec));
+min_img = min(min(img));
+max_img = max(max(img));
+best_rec_rescaled = best_rec-min_rec;
+best_rec_rescaled = best_rec_rescaled*((max_img-min_img)/(max_rec-min_rec));
+best_rec_rescaled = best_rec_rescaled+min_img;
+
 %Plotting the best reconstructed image
 figure
 subplot(3,1,1);
@@ -76,7 +87,7 @@ imshow(noisy_img);
 str = strcat("Noisy image, PSNR = ",num2str(psnr)," dB");
 title(str,'FontSize',12,'interpreter','latex');
 subplot(3,1,2);
-imshow(best_rec);
+imshow(best_rec_rescaled);
 str = strcat("De-noised image, PSNR = ",num2str(best_psnr)," dB");
 title(str,'FontSize',12,'interpreter','latex');
 subplot(3,1,3);

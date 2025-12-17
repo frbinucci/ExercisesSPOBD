@@ -32,13 +32,13 @@ grid on;
 
 M = max(bound);
 %Let's try the reconstruction with the 70% of samples
-M = N*0.70;
+M = 0.90*N;
 phi = (1/sqrt(M))*randn(int32(M),N);
 
 theta = phi*psi;
 
 y=phi*x;
-iterations = 1000;
+iterations = 100;
 rho = 1;
 s_opt = basisPursuitADMM(y,theta,iterations,rho);
 rec_img = psi*s_opt;
@@ -49,6 +49,7 @@ psnr_db = computeNormalizedPSNR(img,rec_img);
 fprintf("PSNR rec = %3.2f dB\n",psnr_db);
 
 %Showing the reconstructed image
+
 figure
 subplot(2,1,1);
 imshow(rec_img);
@@ -57,6 +58,9 @@ title(str,'FontSize',12,'interpreter','latex');
 subplot(2,1,2);
 imshow(img);
 title("Original Image",'FontSize',12,'interpreter','latex');
+
+
+
 
 %% Part 2: handling bigger images
 

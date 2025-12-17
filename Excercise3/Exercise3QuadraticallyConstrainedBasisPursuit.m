@@ -56,7 +56,7 @@ for i=1:n_rows
 end
 
 %% Evaluating the reconstruction PSNR.
-psnr_rec = computeNormalizedPSNR(grayImage,reconstructedImage);
+psnr_rec = computeNormalizedPSNR(grayImage,reconstructed_image);
 
 %Plotting the noisy and the de-noised image
 figure
